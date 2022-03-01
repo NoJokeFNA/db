@@ -85,7 +85,6 @@ public class DbRow extends HashMap<String, Object> {
         return get(column, def).floatValue();
     }
 
-
     public Double getDbl(String column) {
         return ((Number) get(column)).doubleValue();
     }
@@ -99,6 +98,22 @@ public class DbRow extends HashMap<String, Object> {
     }
 
     public String getString(String column, String def) {
+        return get(column, def);
+    }
+
+    public Boolean getBoolean(String column) {
+        return get(column);
+    }
+
+    public Boolean getBoolean(String column, Boolean def) {
+        return get(column, def);
+    }
+
+    public Byte getByte(String column) {
+        return get(column);
+    }
+
+    public Byte getByte(String column, Byte def) {
         return get(column, def);
     }
 
