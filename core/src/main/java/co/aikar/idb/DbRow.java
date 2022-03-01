@@ -146,7 +146,6 @@ public class DbRow extends HashMap<String, Object> {
      * @return Object of the matching type of the result.
      */
     public <T> T remove(@NotNull String column) {
-        Byte[] asd = this.getBytes("");
         return (T) super.remove(column);
     }
 
