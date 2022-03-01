@@ -1,5 +1,8 @@
 package co.aikar.idb;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
@@ -21,7 +24,7 @@ public class BaseDatabase implements Database {
     private ExecutorService threadPool;
     DataSource dataSource;
 
-    public BaseDatabase(DatabaseOptions options) {
+    public BaseDatabase(@NotNull DatabaseOptions options) {
         this.options = options;
         if (options.driverClassName != null && !options.favorDataSourceOverDriver) {
             options.dataSourceClassName = null;
@@ -49,7 +52,7 @@ public class BaseDatabase implements Database {
         this.logger.info("Connecting to Database: " + options.dsn);
     }
 
-    public void close(long timeout, TimeUnit unit) {
+    public void close(long timeout, @NotNull TimeUnit unit) {
         threadPool.shutdown();
         try {
             threadPool.awaitTermination(timeout, unit);
@@ -69,7 +72,7 @@ public class BaseDatabase implements Database {
 
 
     @Override
-    public synchronized <T> CompletableFuture<T> dispatchAsync(Callable<T> task) {
+    public synchronized <T> CompletableFuture<T> dispatchAsync(@NotNull Callable<T> task) {
         CompletableFuture<T> future = new CompletableFuture<>();
         Runnable run = () -> {
             try {
@@ -87,10 +90,9 @@ public class BaseDatabase implements Database {
     }
 
     @Override
-    public DatabaseTiming timings(String name) {
+    public DatabaseTiming timings(@NotNull String name) {
         return timingsProvider.of(options.poolName + " - " + name, sqlTiming);
     }
-
 
     @Override
     public DatabaseOptions getOptions() {
@@ -102,7 +104,8 @@ public class BaseDatabase implements Database {
         return logger;
     }
 
-    public Connection getConnection() throws SQLException {
+    @Override
+    public @Nullable Connection getConnection() throws SQLException {
         return dataSource != null ? dataSource.getConnection() : null;
     }
 }

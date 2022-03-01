@@ -24,6 +24,7 @@
 package co.aikar.idb;
 
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -36,14 +37,17 @@ import java.util.regex.Pattern;
 
 public final class DB {
     private static final Pattern NEWLINE = Pattern.compile("\n");
-    private DB() {}
+
+    private DB() {
+    }
 
     private static Database globalDatabase;
 
     public synchronized static Database getGlobalDatabase() {
         return globalDatabase;
     }
-    public synchronized static void setGlobalDatabase(Database database) {
+
+    public synchronized static void setGlobalDatabase(@NotNull Database database) {
         globalDatabase = database;
     }
 
@@ -54,7 +58,7 @@ public final class DB {
         close(120, TimeUnit.SECONDS);
     }
 
-    public synchronized static void close(long timeout, TimeUnit unit) {
+    public synchronized static void close(long timeout, @NotNull TimeUnit unit) {
         if (globalDatabase != null) {
             globalDatabase.close(timeout, unit);
             globalDatabase = null;
@@ -69,9 +73,10 @@ public final class DB {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    public static DbRow getFirstRow(@Language("SQL") String query, Object... params) throws SQLException {
+    public static DbRow getFirstRow(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.getFirstRow(query, params);
     }
+
     /**
      * Utility method to execute a query and retrieve the first row, then close statement.
      * You should ensure result will only return 1 row for maximum performance.
@@ -80,7 +85,7 @@ public final class DB {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    public static CompletableFuture<DbRow> getFirstRowAsync(@Language("SQL") String query, Object... params) {
+    public static CompletableFuture<DbRow> getFirstRowAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return globalDatabase.getFirstRowAsync(query, params);
     }
 
@@ -92,9 +97,10 @@ public final class DB {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    public static <T> T getFirstColumn(@Language("SQL") String query, Object... params) throws SQLException {
+    public static <T> T getFirstColumn(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.getFirstColumn(query, params);
     }
+
     /**
      * Utility method to execute a query and retrieve the first column of the first row, then close statement.
      * You should ensure result will only return 1 row for maximum performance.
@@ -103,50 +109,51 @@ public final class DB {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    public static <T> CompletableFuture<T> getFirstColumnAsync(@Language("SQL") String query, Object... params) {
+    public static <T> CompletableFuture<T> getFirstColumnAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return globalDatabase.getFirstColumnAsync(query, params);
     }
 
     /**
      * Utility method to execute a query and retrieve first column of all results, then close statement.
-     *
+     * <p>
      * Meant for single queries that will not use the statement multiple times.
      */
-    public static <T> List<T> getFirstColumnResults(@Language("SQL") String query, Object... params) throws SQLException {
+    public static <T> List<T> getFirstColumnResults(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.getFirstColumnResults(query, params);
     }
+
     /**
      * Utility method to execute a query and retrieve first column of all results, then close statement.
-     *
+     * <p>
      * Meant for single queries that will not use the statement multiple times.
      */
-    public static <T> CompletableFuture<List<T>> getFirstColumnResultsAsync(@Language("SQL") String query, Object... params) {
+    public static <T> CompletableFuture<List<T>> getFirstColumnResultsAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return globalDatabase.getFirstColumnResultsAsync(query, params);
     }
 
     /**
      * Utility method to execute a query and retrieve all results, then close statement.
-     *
+     * <p>
      * Meant for single queries that will not use the statement multiple times.
      *
      * @param query  The query to run
      * @param params The parameters to execute the statement with
      * @return List of DbRow of your results (HashMap with template return type)
      */
-    public static List<DbRow> getResults(@Language("SQL") String query, Object... params) throws SQLException {
+    public static List<DbRow> getResults(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.getResults(query, params);
     }
 
     /**
      * Utility method to execute a query and retrieve all results, then close statement.
-     *
+     * <p>
      * Meant for single queries that will not use the statement multiple times.
      *
      * @param query  The query to run
      * @param params The parameters to execute the statement with
      * @return List of DbRow of your results (HashMap with template return type)
      */
-    public static CompletableFuture<List<DbRow>> getResultsAsync(@Language("SQL") String query, Object... params) {
+    public static CompletableFuture<List<DbRow>> getResultsAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return globalDatabase.getResultsAsync(query, params);
     }
 
@@ -158,9 +165,10 @@ public final class DB {
      * @param params Params to execute the statement with.
      * @return Inserted Row Id.
      */
-    public static Long executeInsert(@Language("SQL") String query, Object... params) throws SQLException {
+    public static Long executeInsert(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.executeInsert(query, params);
     }
+
     /**
      * Utility method for executing an update synchronously, and then close the statement.
      *
@@ -168,7 +176,7 @@ public final class DB {
      * @param params Params to execute the statement with.
      * @return Number of rows modified.
      */
-    public static int executeUpdate(@Language("SQL") String query, Object... params) throws SQLException {
+    public static int executeUpdate(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         return globalDatabase.executeUpdate(query, params);
     }
 
@@ -178,38 +186,39 @@ public final class DB {
      * @param query  Query to run
      * @param params Params to execute the update with
      */
-    public static CompletableFuture<Integer> executeUpdateAsync(@Language("SQL") String query, final Object... params) {
+    public static CompletableFuture<Integer> executeUpdateAsync(@Language("SQL") String query, @NotNull final Object... params) {
         return globalDatabase.executeUpdateAsync(query, params);
     }
 
-    private synchronized static <T> CompletableFuture<T> dispatchAsync(Callable<T> task) {
+    private synchronized static <T> CompletableFuture<T> dispatchAsync(@NotNull Callable<T> task) {
         return globalDatabase.dispatchAsync(task);
     }
 
-    public static void createTransactionAsync(TransactionCallback run) {
+    public static void createTransactionAsync(@NotNull TransactionCallback run) {
         globalDatabase.createTransactionAsync(run, null, null);
     }
 
-    public static void createTransactionAsync(TransactionCallback run, Runnable onSuccess, Runnable onFail) {
+    public static void createTransactionAsync(@NotNull TransactionCallback run, Runnable onSuccess, Runnable onFail) {
         globalDatabase.createTransactionAsync(run, onSuccess, onFail);
     }
 
-    public static boolean createTransaction(TransactionCallback run) {
+    public static boolean createTransaction(@NotNull TransactionCallback run) {
         return globalDatabase.createTransaction(run);
     }
 
-    public static void logException(Exception e) {
+    public static void logException(@NotNull Exception e) {
         globalDatabase.logException(e.getMessage(), e);
     }
-    public static void logException(String message, Exception e) {
+
+    public static void logException(@NotNull String message, @NotNull Exception e) {
         globalDatabase.logException(message, e);
     }
 
-    public static void fatalError(Exception e) {
+    public static void fatalError(@NotNull Exception e) {
         globalDatabase.fatalError(e);
     }
 
-    public static void logException(Logger logger, Level logLevel, String message, Exception e) {
+    public static void logException(@NotNull Logger logger, @NotNull Level logLevel, @NotNull String message, Exception e) {
         logger.log(logLevel, message);
 
         if (e != null) {

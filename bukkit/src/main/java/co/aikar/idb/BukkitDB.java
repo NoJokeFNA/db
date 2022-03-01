@@ -1,14 +1,14 @@
 package co.aikar.idb;
 
-import lombok.NonNull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public class BukkitDB {
 
-    public static PooledDatabaseOptions getRecommendedOptions(Plugin plugin, @NonNull String user, @NonNull String pass, @NonNull String db, @NonNull String hostAndPort) {
+    public static PooledDatabaseOptions getRecommendedOptions(Plugin plugin, @NotNull String user, @NotNull String pass, @NotNull String db, @NotNull String hostAndPort) {
         DatabaseOptions options = DatabaseOptions
                 .builder()
                 .poolName(plugin.getDescription().getName() + " DB")
@@ -22,7 +22,7 @@ public class BukkitDB {
         return poolOptions;
     }
 
-    public static Database createHikariDatabase(Plugin plugin, @NonNull String user, @NonNull String pass, @NonNull String db, @NonNull String hostAndPort) {
+    public static Database createHikariDatabase(Plugin plugin, @NotNull String user, @NotNull String pass, @NotNull String db, @NotNull String hostAndPort) {
         return createHikariDatabase(plugin, getRecommendedOptions(plugin, user, pass, db, hostAndPort));
     }
 
@@ -45,5 +45,4 @@ public class BukkitDB {
         }, plugin);
         return db;
     }
-
 }

@@ -2,16 +2,14 @@ package co.aikar.idb;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class HikariPooledDatabase extends BaseDatabase {
     private final PooledDatabaseOptions poolOptions;
 
-    public HikariPooledDatabase(PooledDatabaseOptions poolOptions) {
+    public HikariPooledDatabase(@NotNull PooledDatabaseOptions poolOptions) {
         super(poolOptions.options);
         this.poolOptions = poolOptions;
         DatabaseOptions options = poolOptions.options;
@@ -26,6 +24,7 @@ public class HikariPooledDatabase extends BaseDatabase {
         if (options.user != null) {
             config.addDataSourceProperty("user", options.user);
         }
+
         if (options.pass != null) {
             config.addDataSourceProperty("password", options.pass);
         }
@@ -42,6 +41,7 @@ public class HikariPooledDatabase extends BaseDatabase {
             config.addDataSourceProperty("elideSetAutoCommits", true);
             config.addDataSourceProperty("alwaysSendSetIsolation", false);
         }
+
         if (poolOptions.dataSourceProperties != null) {
             for (Map.Entry<String, Object> entry : poolOptions.dataSourceProperties.entrySet()) {
                 config.addDataSourceProperty(entry.getKey(), entry.getValue());

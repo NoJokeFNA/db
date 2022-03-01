@@ -1,8 +1,9 @@
 package co.aikar.idb;
 
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,19 +26,20 @@ public interface Database {
     /**
      * Called in onDisable, destroys the Data source and nulls out references.
      */
-    void close(long timeout, TimeUnit unit);
+    void close(long timeout, @NotNull TimeUnit unit);
 
-    <T> CompletableFuture<T> dispatchAsync(Callable<T> task);
+    <T> CompletableFuture<T> dispatchAsync(@NotNull Callable<T> task);
 
     /**
      * Get a JDBC Connection
      */
+    @Nullable
     Connection getConnection() throws SQLException;
 
     /**
      * Create a Timings object
      */
-    DatabaseTiming timings(String name);
+    DatabaseTiming timings(@NotNull String name);
 
     /**
      * Get the Logger
@@ -49,11 +51,11 @@ public interface Database {
      */
     DatabaseOptions getOptions();
 
-    default void fatalError(Exception e) {
+    default void fatalError(@NotNull Exception e) {
         getOptions().onFatalError.accept(e);
     }
 
-    default void closeConnection(Connection conn) throws SQLException {
+    default void closeConnection(@NotNull Connection conn) throws SQLException {
         conn.close();
     }
 
@@ -71,7 +73,7 @@ public interface Database {
      * <p/>
      * YOU MUST MANUALLY CLOSE THIS STATEMENT IN A finally {} BLOCK!
      */
-    default DbStatement query(@Language("SQL") String query) throws SQLException {
+    default DbStatement query(@Language("SQL") @NotNull String query) throws SQLException {
         DbStatement stm = new DbStatement(this);
         try {
             stm.query(query);
@@ -87,7 +89,7 @@ public interface Database {
      * <p/>
      * YOU MUST MANUALLY CLOSE THIS STATEMENT IN A finally {} BLOCK!
      */
-    default CompletableFuture<DbStatement> queryAsync(@Language("SQL") String query) {
+    default CompletableFuture<DbStatement> queryAsync(@Language("SQL") @NotNull String query) {
         return dispatchAsync(() -> new DbStatement(this).query(query));
     }
 
@@ -99,7 +101,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    default DbRow getFirstRow(@Language("SQL") String query, Object... params) throws SQLException {
+    default DbRow getFirstRow(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         try (DbStatement statement = query(query)) {
             statement.execute(params);
             return statement.getNextRow();
@@ -114,7 +116,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    default CompletableFuture<DbRow> getFirstRowAsync(@Language("SQL") String query, Object... params) {
+    default CompletableFuture<DbRow> getFirstRowAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return dispatchAsync(() -> getFirstRow(query, params));
     }
 
@@ -126,7 +128,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    default <T> T getFirstColumn(@Language("SQL") String query, Object... params) throws SQLException {
+    default <T> T getFirstColumn(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         try (DbStatement statement = query(query)) {
             statement.execute(params);
             return statement.getFirstColumn();
@@ -141,7 +143,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return DbRow of your results (HashMap with template return type)
      */
-    default <T> CompletableFuture<T> getFirstColumnAsync(@Language("SQL") String query, Object... params) {
+    default <T> CompletableFuture<T> getFirstColumnAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return dispatchAsync(() -> getFirstColumn(query, params));
     }
 
@@ -150,7 +152,7 @@ public interface Database {
      * <p>
      * Meant for single queries that will not use the statement multiple times.
      */
-    default <T> List<T> getFirstColumnResults(@Language("SQL") String query, Object... params) throws SQLException {
+    default <T> List<T> getFirstColumnResults(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         List<T> dbRows = new ArrayList<>();
         T result;
         try (DbStatement statement = query(query)) {
@@ -167,7 +169,7 @@ public interface Database {
      * <p>
      * Meant for single queries that will not use the statement multiple times.
      */
-    default <T> CompletableFuture<List<T>> getFirstColumnResultsAsync(@Language("SQL") String query, Object... params) {
+    default <T> CompletableFuture<List<T>> getFirstColumnResultsAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return dispatchAsync(() -> getFirstColumnResults(query, params));
     }
 
@@ -180,7 +182,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return List of DbRow of your results (HashMap with template return type)
      */
-    default List<DbRow> getResults(@Language("SQL") String query, Object... params) throws SQLException {
+    default List<DbRow> getResults(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         try (DbStatement statement = query(query)) {
             statement.execute(params);
             return statement.getResults();
@@ -196,7 +198,7 @@ public interface Database {
      * @param params The parameters to execute the statement with
      * @return List of DbRow of your results (HashMap with template return type)
      */
-    default CompletableFuture<List<DbRow>> getResultsAsync(@Language("SQL") String query, Object... params) {
+    default CompletableFuture<List<DbRow>> getResultsAsync(@Language("SQL") @NotNull String query, @NotNull Object... params) {
         return dispatchAsync(() -> getResults(query, params));
     }
 
@@ -208,7 +210,8 @@ public interface Database {
      * @param params Params to execute the statement with.
      * @return Inserted Row Id.
      */
-    default Long executeInsert(@Language("SQL") String query, Object... params) throws SQLException {
+    @Nullable
+    default Long executeInsert(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         try (DbStatement statement = query(query)) {
             int i = statement.executeUpdate(params);
             if (i > 0) {
@@ -225,7 +228,7 @@ public interface Database {
      * @param params Params to execute the statement with.
      * @return Number of rows modified.
      */
-    default int executeUpdate(@Language("SQL") String query, Object... params) throws SQLException {
+    default int executeUpdate(@Language("SQL") @NotNull String query, @NotNull Object... params) throws SQLException {
         try (DbStatement statement = query(query)) {
             return statement.executeUpdate(params);
         }
@@ -237,15 +240,16 @@ public interface Database {
      * @param query  Query to run
      * @param params Params to execute the update with
      */
-    default CompletableFuture<Integer> executeUpdateAsync(@Language("SQL") String query, final Object... params) {
+    default CompletableFuture<Integer> executeUpdateAsync(@Language("SQL") @NotNull String query, @NotNull final Object... params) {
         return dispatchAsync(() -> executeUpdate(query, params));
     }
 
-    default void createTransactionAsync(TransactionCallback run) {
+    @Nullable
+    default void createTransactionAsync(@NotNull TransactionCallback run) {
         createTransactionAsync(run, null, null);
     }
 
-    default void createTransactionAsync(TransactionCallback run, Runnable onSuccess, Runnable onFail) {
+    default void createTransactionAsync(@NotNull TransactionCallback run, Runnable onSuccess, Runnable onFail) {
         dispatchAsync(() -> {
             if (!createTransaction(run)) {
                 if (onFail != null) {
@@ -258,7 +262,7 @@ public interface Database {
         });
     }
 
-    default boolean createTransaction(TransactionCallback run) {
+    default boolean createTransaction(@NotNull TransactionCallback run) {
         try (DbStatement stm = new DbStatement(this)) {
             try {
                 stm.startTransaction();
@@ -279,13 +283,11 @@ public interface Database {
         return false;
     }
 
-    default void logException(String message, Exception e) {
+    default void logException(@NotNull String message, @NotNull Exception e) {
         DB.logException(getLogger(), Level.SEVERE, message, e);
     }
 
-    default void logException(Exception e) {
+    default void logException(@NotNull Exception e) {
         DB.logException(getLogger(), Level.SEVERE, e.getMessage(), e);
     }
-
-
 }

@@ -2,7 +2,7 @@ package co.aikar.idb;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -15,11 +15,11 @@ public class DatabaseOptions {
     /**
      * JDBC DSN to connect to
      */
-    @NonNull String dsn;
+    @NotNull String dsn;
     /**
      * JDBC Classname of the Driver name to use
      */
-    @NonNull String driverClassName;
+    @NotNull String driverClassName;
     /**
      * Class name of DataSource to use
      */
@@ -43,15 +43,14 @@ public class DatabaseOptions {
     @Builder.Default TimingsProvider timingsProvider = (name, parent) -> NULL_TIMING;
     @Builder.Default Consumer<Exception> onFatalError = DB::logException;
     @Builder.Default Consumer<Exception> onDatabaseConnectionFailure = DB::logException;
-
-
+    
     String user;
     String pass;
     Logger logger;
     ExecutorService executor;
 
     public static class DatabaseOptionsBuilder {
-        public DatabaseOptionsBuilder mysql(@NonNull String user, @NonNull String pass, @NonNull String db, @NonNull String hostAndPort) {
+        public DatabaseOptionsBuilder mysql(@NotNull String user, @NotNull String pass, @NotNull String db, @NotNull String hostAndPort) {
             if (hostAndPort == null) {
                 hostAndPort = "localhost:3306";
             }
@@ -72,7 +71,7 @@ public class DatabaseOptions {
             return this;
         }
 
-        public DatabaseOptionsBuilder sqlite(@NonNull String fileName) {
+        public DatabaseOptionsBuilder sqlite(@NotNull String fileName) {
             if (defaultIsolationLevel == null) defaultIsolationLevel = "TRANSACTION_SERIALIZABLE";
 
             if (dataSourceClassName == null) tryDataSourceClassName("org.sqlite.SQLiteDataSource");
@@ -87,7 +86,7 @@ public class DatabaseOptions {
         /**
          * Tries the specified JDBC driverClassName, and uses it if it is valid. Does nothing if a Driver is already set
          */
-        public DatabaseOptionsBuilder tryDriverClassName(@NonNull String className) {
+        public DatabaseOptionsBuilder tryDriverClassName(@NotNull String className) {
             try {
                 driverClassName(className);
             } catch (Exception ignored) {}
@@ -98,14 +97,14 @@ public class DatabaseOptions {
         /**
          * Tries the specified JDBC DataSource, and uses it if it is valid. Does nothing if a DataSource is already set
          */
-        public DatabaseOptionsBuilder tryDataSourceClassName(@NonNull String className) {
+        public DatabaseOptionsBuilder tryDataSourceClassName(@NotNull String className) {
             try {
                 dataSourceClassName(className);
             } catch (Exception ignored) {}
             return this;
         }
 
-        public DatabaseOptionsBuilder driverClassName(@NonNull String className) {
+        public DatabaseOptionsBuilder driverClassName(@NotNull String className) {
             try {
                 Class.forName(className).newInstance();
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -115,7 +114,7 @@ public class DatabaseOptions {
             return this;
         }
 
-        public DatabaseOptionsBuilder dataSourceClassName(@NonNull String className) {
+        public DatabaseOptionsBuilder dataSourceClassName(@NotNull String className) {
             try {
                 Class.forName(className);
             } catch (ClassNotFoundException e) {

@@ -23,6 +23,8 @@
 
 package co.aikar.idb;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 
 /**
@@ -40,7 +42,7 @@ public class DbRow extends HashMap<String, Object> {
      * @param column
      * @return Object of the matching type of the result.
      */
-    public <T> T get(String column) {
+    public <T> T get(@NotNull String column) {
         return (T) super.get(column);
     }
     /**
@@ -53,7 +55,7 @@ public class DbRow extends HashMap<String, Object> {
      * @param column
      * @return Object of the matching type of the result.
      */
-    public <T> T get(String column, T def) {
+    public <T> T get(@NotNull String column, @NotNull T def) {
         T res = (T) super.get(column);
         if (res == null) {
             return def;
@@ -61,59 +63,59 @@ public class DbRow extends HashMap<String, Object> {
         return res;
     }
 
-    public Long getLong(String column) {
+    public Long getLong(@NotNull String column) {
         return get(column);
     }
 
-    public Long getLong(String column, Number def) {
+    public Long getLong(@NotNull String column, @NotNull Number def) {
         return get(column, def).longValue();
     }
 
-    public Integer getInt(String column) {
+    public Integer getInt(@NotNull String column) {
         return ((Number) get(column)).intValue();
     }
 
-    public Integer getInt(String column, Number def) {
+    public Integer getInt(@NotNull String column, @NotNull Number def) {
         return get(column, def).intValue();
     }
 
-    public Float getFloat(String column) {
+    public Float getFloat(@NotNull String column) {
         return ((Number) get(column)).floatValue();
     }
 
-    public Float getFloat(String column, Number def) {
+    public Float getFloat(@NotNull String column, @NotNull Number def) {
         return get(column, def).floatValue();
     }
 
-    public Double getDbl(String column) {
+    public Double getDbl(@NotNull String column) {
         return ((Number) get(column)).doubleValue();
     }
 
-    public Double getDbl(String column, Number def) {
+    public Double getDbl(@NotNull String column, @NotNull Number def) {
         return get(column, def).doubleValue();
     }
 
-    public String getString(String column) {
+    public String getString(@NotNull String column) {
         return get(column);
     }
 
-    public String getString(String column, String def) {
+    public String getString(@NotNull String column, @NotNull String def) {
         return get(column, def);
     }
 
-    public Boolean getBoolean(String column) {
+    public Boolean getBoolean(@NotNull String column) {
         return get(column);
     }
 
-    public Boolean getBoolean(String column, Boolean def) {
+    public Boolean getBoolean(@NotNull String column, @NotNull Boolean def) {
         return get(column, def);
     }
 
-    public Byte getByte(String column) {
+    public Byte getByte(@NotNull String column) {
         return get(column);
     }
 
-    public Byte getByte(String column, Byte def) {
+    public Byte getByte(@NotNull String column, @NotNull Byte def) {
         return get(column, def);
     }
 
@@ -127,7 +129,7 @@ public class DbRow extends HashMap<String, Object> {
      * @param column
      * @return Object of the matching type of the result.
      */
-    public <T> T remove(String column) {
+    public <T> T remove(@NotNull String column) {
         return (T) super.remove(column);
     }
 
@@ -141,7 +143,7 @@ public class DbRow extends HashMap<String, Object> {
      * @param column
      * @return Object of the matching type of the result.
      */
-    public <T> T remove(String column, T def) {
+    public <T> T remove(@NotNull String column, @NotNull T def) {
         T res = (T) super.remove(column);
         if (res == null) {
             return def;
