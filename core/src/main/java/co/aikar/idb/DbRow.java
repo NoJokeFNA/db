@@ -64,7 +64,7 @@ public class DbRow extends HashMap<String, Object> {
     }
 
     public Long getLong(@NotNull String column) {
-        return get(column);
+        return ((Number) get(column)).longValue();
     }
 
     public Long getLong(@NotNull String column, @NotNull Number def) {
@@ -111,11 +111,27 @@ public class DbRow extends HashMap<String, Object> {
         return get(column, def);
     }
 
+    public Short getShort(@NotNull String column) {
+        return ((Number) get(column)).shortValue();
+    }
+
+    public Short getShort(@NotNull String column, @NotNull Short def) {
+        return get(column, def);
+    }
+
     public Byte getByte(@NotNull String column) {
-        return get(column);
+        return ((Number) get(column)).byteValue();
     }
 
     public Byte getByte(@NotNull String column, @NotNull Byte def) {
+        return get(column, def);
+    }
+
+    public Byte[] getBytes(@NotNull String column) {
+        return get(column);
+    }
+
+    public Byte[] getBytes(@NotNull String column, @NotNull Byte[] def) {
         return get(column, def);
     }
 
@@ -130,6 +146,7 @@ public class DbRow extends HashMap<String, Object> {
      * @return Object of the matching type of the result.
      */
     public <T> T remove(@NotNull String column) {
+        Byte[] asd = this.getBytes("");
         return (T) super.remove(column);
     }
 
